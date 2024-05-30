@@ -1,8 +1,7 @@
 <?php
 
-use Illuminate\Http\Request;
+use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\UserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,30 +18,18 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::get('/greetting', function () {
+    return 'Hello World';
+})->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::get('/blog', function () {
-    return 'Bonjour';
+Route::middleware('auth')->group(function () {
+    
 });
 
-Route::get('/blog', function () {
-    return [
-        // "name" => $_GET['name']
-        "article" => "Article 1"
-    ];
+Route::middleware('auth')->group(function () {
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-Route::get('/user', function (Request $request) {
-    return [
-        "name" => $request->path(),
-        "article" => "Article 1"
-    ]; 
-});
-
-// Route::get('/word', function() {
-//     return
-//     "<body>
-//     <p>
-//     <a href="http://www.google.com">Hello Word</a>
-//     </p>
-//     </body>";
-// });
+require __DIR__.'/auth.php';
